@@ -1,21 +1,21 @@
-import axios from 'axios';
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Card from './Template/Card';
+import api from '../../services/api';
 interface SignUpForm {
     username: string;
     password: string;
   }
-interface IError {
-  message: string;
-}
+// interface IError {
+//   message: string;
+// }
 const SignUpCard = () => {
   const navigate = useNavigate();
     const [formData, setFormData] = useState<SignUpForm>({
         username: '',
         password: '',
       });
-      const [error, setError] = useState<IError>({message: ''});
+      // const [error, setError] = useState<IError>({message: ''});
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData({
@@ -30,12 +30,13 @@ const SignUpCard = () => {
         e.preventDefault();
         // Handle login logic here
         try {
-          await axios.post('http://localhost:5000/api/v1/auth/signup', {
+          await api.post('/auth/signup', {
             ...formData,
           });
+
           navigate('/login');
         } catch (err) {
-          setError({message: 'Error signing up. Please try again.'}  );
+          // setError({message: 'Error signing up. Please try again.'}  );
           console.log(err)
         }
       };

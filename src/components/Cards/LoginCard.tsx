@@ -1,7 +1,8 @@
-import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Card from './Template/Card';
+import { UserContext } from '../../context/AuthContext';
+import api from '../../services/api';
 interface LoginForm {
     username: string;
     password: string;
@@ -9,6 +10,7 @@ interface LoginForm {
   
 const LoginCard = () => {
   const navigate = useNavigate();
+  const { login } = useContext(UserContext)!; // Use non-null assertion
     const [formData, setFormData] = useState<LoginForm>({
         username: '',
         password: '',
@@ -19,7 +21,6 @@ const LoginCard = () => {
           ...formData,
           [name]: value,
         });
-        console.log(formData)
 
       };
     
@@ -27,15 +28,15 @@ const LoginCard = () => {
         e.preventDefault();
         // Handle login logic here
         try {
-          const response = await axios.post('http://localhost:5000/api/v1/auth/login', {
+          const response = await api.post('/auth/login', {
             ...formData,
           });
-    
+          console.log(response.data);
           // Assuming the response contains a token
           const { token } = response.data;
-    
           // Store the token in localStorage
           localStorage.setItem('token', token);
+          login(formData);
           // Redirect to a protected route
           navigate('/');
         } catch (err) {
